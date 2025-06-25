@@ -18,8 +18,10 @@ LunchPicker/
 └── db.json
 
 Author
+
 Created by Samuel
 
 License
+
 This project is licensed under the MIT License.
 
