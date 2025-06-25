@@ -1,0 +1,52 @@
+{
+"lunchSpots": [
+    {
+    "id": 1,
+    "name": "Mama Oliech",
+    "cuisine": "Kenyan",
+    "location": "Kilimani, Nairobi",
+    "rating": 4.5,
+    "hours": "8am - 9pm"
+    },
+    {
+    "id": 2,
+    "name": "TandooriPatio",
+    "cuisine": "Indian",
+    "location": "Westlands, Nairobi",
+    "rating": 4.2,
+    "hours": "11am - 10pm"
+    },
+    {
+    "id": 3,
+    "name": "bora nishibe",
+    "cuisine": "Fast Food",
+    "location": "opposite moringa",
+    "rating": 4.0,
+    "hours": "7am - 8pm"
+    },
+    {
+    "id": 4,
+    "name": "Luigi’s Pizza",
+    "cuisine": "Italian",
+    "location": "Lavington, Nairobi",
+    "rating": 4.7,
+    "hours": "12pm - 11pm"
+    },
+    {
+    "id": 5,
+    "name": "Galitos",
+    "cuisine": "TooGood",
+    "location": "Thika Road Mall",
+    "rating": 3.9,
+    "hours": "10am - 9pm"
+    },
+    {
+    "id": 6,
+    "name": "Kwa mathe",
+    "cuisine": "Smocha",
+    "location": "ngong lane",
+    "rating": 4.3,
+    "hours": "10am - 8pm"
+    }
+]
+}

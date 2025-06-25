@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LunchPicker</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+    <h1>LunchPicker</h1>
+    <p>Find your next meal spot with ease!</p>
+</header>
+
+<section class="controls">
+    <label for="cuisine-filter">Choose a cuisine:</label>
+    <select id="cuisine-filter">
+    <option value="All">All</option>
+    <option value="Kenyan">Kenyan</option>
+    <option value="Indian">Indian</option>
+    <option value="Fast Food">Fast Food</option>
+    <option value="Italian">Italian</option>
+    <option value="TooGood">TooGood</option>
+    <!-- Add more if needed -->
+    </select>
+    <button id="random-btn">Pick Random Spot</button>
+</section>
+
+<main class="container">
+    <section id="spot-list" class="list">
+    <!-- All lunch spots appear here -->
+    </section>
+
+    <section id="spot-detail" class="details">
+    <p>Click on a spot name to view details here.</p>
+    </section>
+
+    <aside class="favorites">
+    <h2>Saved Favorites</h2>
+    <ul id="favorites"></ul>
+    </aside>
+</main>
+
+<script src="src/index.js"></script>
+</body>
+</html>
