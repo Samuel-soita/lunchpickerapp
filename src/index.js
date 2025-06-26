@@ -1,100 +1,158 @@
-//  URL for the lunch spots API
+// Base URL for the local lunch spots API
 const BASE_URL = "http://localhost:3000/lunchSpots";
 
-// will only run if the page has loaded
+// When the page loads, initialize everything
 document.addEventListener("DOMContentLoaded", () => {
-  loadLunchSpots();         // Load all spots 
-  setupRandomPicker();      // Random button functionality
-  setupCuisineFilter();     // Dropdown filter functionality
+  loadLunchSpots();        // Fetch and show all lunch spots
+  setupRandomPicker();     // Setup random spot button
+  setupCuisineFilter();    // Setup cuisine filter dropdown
 });
 
-// using fetch display all lunch spots
+// Fetch and display all lunch spots from the API
 function loadLunchSpots() {
 fetch(BASE_URL)
-.then(res => res.json()) //converts response to json
-.then(spots => {
-displaySpots(spots); //sends data to display spots to display on page
-    });
+    .then(response => response.json())     // Convert response to JSON
+    .then(data => displaySpots(data));     // Send data to display function
 }
 
-// build html for every lunch spot
+// Render each lunch spot to the main spot list section
 function displaySpots(spots) {
-const list = document.getElementById("spot-list");  //selects container where the "lunchspots" should go,clears any previous content
-list.innerHTML = "";
+const container = document.getElementById("spot-list");
+  container.innerHTML = "";  // Clear previous content
 
-spots.forEach(spot => {   //Loops through all the lunch spots
-    const item = document.createElement("div");   //Creates a new <div> for each one
-    item.classList.add("spot-item");   //Adds a CSS class so it can be styled
-    item.innerHTML = `
-    <h3 class="spot-name" style="cursor:pointer">${spot.name}</h3> 
+spots.forEach(spot => {
+    const spotCard = document.createElement("div");
+    spotCard.className = "spot-item";
+
+    // Basic spot info (name & cuisine)
+    spotCard.innerHTML = `
+    <h3 class="spot-name" style="cursor:pointer">${spot.name}</h3>
     <p><strong>Cuisine:</strong> ${spot.cuisine}</p>
     `;
 
-    // Click name to view full details
-    item.querySelector(".spot-name").addEventListener("click", () => {
-    showDetails(spot);  //Adds a click event to the name. When clicked, it will show full details.
+    // When the name is clicked, show full details
+    spotCard.querySelector(".spot-name").addEventListener("click", () => {
+    showSpotDetails(spot);
     });
 
-    list.appendChild(item);  //Adds each spot’s <div> to the page
+    container.appendChild(spotCard); // Add to DOM
 });
 }
 
-// let me see random spot details
-function showRandomSpot(spots) {
-const random = spots[Math.floor(Math.random() * spots.length)];
-showDetails(random);
+// Show full details of a selected lunch spot
+function showSpotDetails(spot) {
+const detailSection = document.getElementById("spot-detail");
+
+  // Populate the details section with spot info and buttons
+detailSection.innerHTML = `
+    <h2>${spot.name}</h2>
+    <p><strong>Cuisine:</strong> ${spot.cuisine}</p>
+    <p><strong>Location:</strong> ${spot.location || "Not provided"}</p>
+    <p><strong>Rating:</strong> <span id="rating-display">${spot.rating || "N/A"}</span></p>
+
+    <input type="number" id="new-rating" placeholder="New rating (1-5)" min="1" max="5"/>
+    <button id="submit-rating">Update Rating</button>
+
+    <button id="add-favorite">Add to Favorites</button>
+    <button id="remove-favorite">Remove from Favorites</button>
+`;
+
+  // Add event listeners for buttons
+document.getElementById("add-favorite").addEventListener("click", () => {
+    addFavorite(spot);
+});
+
+document.getElementById("remove-favorite").addEventListener("click", () => {
+    removeFavorite(spot.id);
+});
+
+document.getElementById("submit-rating").addEventListener("click", () => {
+    const newRating = document.getElementById("new-rating").value;
+    if (newRating) updateRating(spot.id, newRating);
+});
 }
 
-// Load and display a random lunch spot
+// Add a lunch spot to the favorites list (avoid duplicates)
+function addFavorite(spot) {
+const favList = document.getElementById("favorites");
+
+  // Check if already added
+const exists = Array.from(favList.children).some(item => item.dataset.id == spot.id);
+if (exists) return;
+
+  // Create new list item
+const favItem = document.createElement("li");
+favItem.textContent = `${spot.name} (${spot.cuisine})`;
+favItem.dataset.id = spot.id;
+
+favList.appendChild(favItem);
+}
+
+// Remove a spot from favorites by ID
+function removeFavorite(id) {
+const favList = document.getElementById("favorites");
+const items = favList.querySelectorAll("li");
+
+  // Loop and remove matching item
+items.forEach(item => {
+    if (item.dataset.id == id) {
+    item.remove();
+    }
+});
+}
+
+// Send PATCH request to update rating of a spot
+function updateRating(id, rating) {
+fetch(`${BASE_URL}/${id}`, {
+    method: "PATCH", // Or PUT if your server uses full replacement
+    headers: {
+    "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ rating: Number(rating) }) // Ensure numeric
+})
+    .then(res => res.json())
+    .then(updated => {
+      // Reflect new rating in the UI
+    document.getElementById("rating-display").textContent = updated.rating;
+    alert("Rating successfully updated.");
+    })
+    .catch(error => {
+    alert("Failed to update rating.");
+    console.error(error);
+    });
+}
+
+// Setup functionality for the "Random" button
 function setupRandomPicker() {
 const button = document.getElementById("random-btn");
 
 button.addEventListener("click", () => {
     fetch(BASE_URL)
-    .then(res => res.json())
-    .then(spots => showRandomSpot(spots));
-});
-}
-
-// Filter spots based on selected cuisine
-function setupCuisineFilter() {
-const dropdown = document.getElementById("cuisine-filter");
-
-dropdown.addEventListener("change", (e) => {
-    const selected = e.target.value;    //Gets the dropdown menu.
-
-    fetch(BASE_URL)
-    .then(res => res.json())
+    .then(response => response.json())
     .then(spots => {
-        const filtered = selected === "All"
-        ? spots
-        : spots.filter(spot => spot.cuisine === selected);
-        displaySpots(filtered);
+        // Pick a random spot
+        const randomSpot = spots[Math.floor(Math.random() * spots.length)];
+        showSpotDetails(randomSpot);
     });
 });
 }
 
-// a spot selected has to be shown fully what it entails
-function showDetails(spot) {
-const detail = document.getElementById("spot-detail");  //Uses a fallback if location or rating is missing ("Not provided" or "N/A")
+// Setup dropdown filter for cuisine types
+function setupCuisineFilter() {
+const dropdown = document.getElementById("cuisine-filter");
 
-detail.innerHTML = `
-    <h2>${spot.name}</h2>
-    <p><strong>cuisine:</strong> ${spot.cuisine}</p>
-    <p><strong>location:</strong> ${spot.location || "Not provided"}</p>
-    <p><strong>Rating:</strong> ${spot.rating || "N/A"}</p>
-    <button id="fav-btn">Add to Favorites</button>
-`;
+dropdown.addEventListener("change", event => {
+    const selectedCuisine = event.target.value;
 
-document.getElementById("fav-btn").addEventListener("click", () => {
-    saveToFavorites(spot);
+    fetch(BASE_URL)
+    .then(res => res.json())
+    .then(spots => {
+        // Filter or show all depending on selection
+        const filtered = selectedCuisine === "All"
+        ? spots
+        : spots.filter(spot => spot.cuisine === selectedCuisine);
+
+        displaySpots(filtered);
+    });
 });
-}
-
-// you can save the best spot you love to favorites you have to have a favorite
-function saveToFavorites(spot) {
-const favorites = document.getElementById("favorites");
-const item = document.createElement("li");
-item.textContent = `${spot.name} (${spot.cuisine})`;
-favorites.appendChild(item);
 }
