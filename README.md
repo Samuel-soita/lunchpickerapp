@@ -11,6 +11,8 @@ Pick a random lunch spot
 Responsive and minimal UI
 
 File Structure
+
+
 LunchPicker/
 ├── index.html
 ├── src/index.js
