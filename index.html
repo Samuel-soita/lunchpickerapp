@@ -4,15 +4,20 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>LunchPicker</title>
+
+<!-- Link to external CSS -->
 <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
+<!-- Page Header -->
 <header>
     <h1>LunchPicker</h1>
     <p>Find your next meal spot with ease!</p>
 </header>
 
+<!-- Cuisine Filter & Random Pick Controls -->
 <section class="controls">
     <label for="cuisine-filter">Choose a cuisine:</label>
     <select id="cuisine-filter">
@@ -22,26 +27,35 @@
     <option value="Fast Food">Fast Food</option>
     <option value="Italian">Italian</option>
     <option value="TooGood">TooGood</option>
-    <!-- Add more if needed -->
+    <!-- Add more cuisine types as needed -->
     </select>
+    
+    <!-- Button to pick a random lunch spot -->
     <button id="random-btn">Pick Random Spot</button>
 </section>
 
+<!-- Main Content Area -->
 <main class="container">
+    
+    <!-- List of all lunch spots -->
     <section id="spot-list" class="list">
-    <!-- All lunch spots appear here -->
+    <!-- JavaScript will populate this -->
     </section>
 
+    <!-- Detailed view of a selected spot -->
     <section id="spot-detail" class="details">
     <p>Click on a spot name to view details here.</p>
     </section>
 
+    <!-- Favorites sidebar -->
     <aside class="favorites">
     <h2>Saved Favorites</h2>
     <ul id="favorites"></ul>
     </aside>
+
 </main>
 
+<!-- JavaScript app logic -->
 <script src="src/index.js"></script>
 </body>
 </html>
